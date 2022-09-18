@@ -22,7 +22,7 @@
 #define BLINK_GPIO (gpio_num_t)CONFIG_BLINK_GPIO
 
 #ifndef LED_BUILTIN
-#define LED_BUILTIN 4
+#define LED_BUILTIN 8
 #endif
 
 void blink_task(void *pvParameter)
@@ -72,6 +72,6 @@ void setup() {
 void loop() {
     digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
     Serial.println("Hello!");
-    delay(1000);
+    delay(250);
 }
 #endif
