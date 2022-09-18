@@ -15,6 +15,7 @@
 #include <driver/gpio.h>
 #include "sdkconfig.h"
 #include <Arduino.h>
+#include "USB.h"
 
 /* Can run 'make menuconfig' to choose the GPIO to blink,
    or you can edit the following line and set a number here.
@@ -110,11 +111,9 @@ void setup()
 
     print_wakeup_reason(); // Print the wakeup reason for ESP32
 
-    delay(5000);
-
     esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR); // ESP32 wakes up every 5 seconds
 
-    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON); // all RTC Peripherals are powered
+    esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_OFF); // all RTC Peripherals are powered off
 }
 
 void loop()
