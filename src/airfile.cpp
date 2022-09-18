@@ -15,7 +15,7 @@
 #include <driver/gpio.h>
 #include "sdkconfig.h"
 #include <Arduino.h>
-#include "USB.h"
+#include <USB.h>
 
 /* Can run 'make menuconfig' to choose the GPIO to blink,
    or you can edit the following line and set a number here.
@@ -129,6 +129,7 @@ void loop()
 
     Serial.println("Going to deep-sleep now");
     Serial.flush();
+    Serial.end();
     esp_deep_sleep_start();
 }
 #endif
