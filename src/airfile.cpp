@@ -16,6 +16,7 @@
 #include "sdkconfig.h"
 #include <Arduino.h>
 #include <USB.h>
+#include "wirelessif.h"
 
 /* Can run 'make menuconfig' to choose the GPIO to blink,
    or you can edit the following line and set a number here.
@@ -114,22 +115,27 @@ void setup()
     esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR); // ESP32 wakes up every 5 seconds
 
     esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_OFF); // all RTC Peripherals are powered off
+
+    init_iot_client(); // Initialize Wifi and MQTT client, static IP and connect to broker
+
+    delay(5000);
 }
 
 void loop()
 {
     static uint8_t i = 0;
-    while (i < 24)
+    while (i < 48)
     {
+        publish("file", "file descriptor");
         digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-        Serial.println("Hello!");
         delay(250);
         i++;
     }
-
+    i = 0;
     Serial.println("Going to deep-sleep now");
     Serial.flush();
-    Serial.end();
+    // Serial.end();
+    delay(5000);
     esp_deep_sleep_start();
 }
 #endif

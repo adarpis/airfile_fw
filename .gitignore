@@ -38,3 +38,6 @@
 # ESP32 IDF
 sdkconfig.*
 !sdkconfig.defaults
+
+# PlatformIO
+compile_commands.json
