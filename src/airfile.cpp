@@ -17,6 +17,7 @@
 #include <Arduino.h>
 #include <USB.h>
 #include "wirelessif.h"
+#include "filesender.h"
 
 /* Can run 'make menuconfig' to choose the GPIO to blink,
    or you can edit the following line and set a number here.
@@ -82,6 +83,7 @@ void print_wakeup_reason()
 
 static void powerDown()
 {
+    delay(2000);
     esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
     esp_deep_sleep_start();
 }
@@ -99,9 +101,14 @@ void setup()
     xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
     pinMode(LED_BUILTIN, OUTPUT);
 
-    print_wakeup_reason(); // Print the wakeup reason for ESP32
-    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR); // ESP32 wakes up every 10 minutes
+    print_wakeup_reason();                                            // Print the wakeup reason for ESP32
+    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);    // ESP32 wakes up every 10 minutes
     esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_OFF); // all RTC Peripherals are powered off
+
+    if (initFileSender("/500KB.out"))
+    {
+        powerDown();
+    }
 
     init_iot_client(); // Initialize Wifi and MQTT client, static IP and connect to broker
 

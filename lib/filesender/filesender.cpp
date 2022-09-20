@@ -9,7 +9,7 @@
  *
  */
 
-#include "SPIFFS.h"
+#include <SPIFFS.h>
 #include <Arduino.h>
 #include <stdlib.h>
 
@@ -20,12 +20,11 @@ bool initFileSender(const char* path)
         Serial.println("An Error has occurred while mounting SPIFFS");
         return EXIT_FAILURE;
     }
-    File file = SPIFFS.open(path);
-    if (!file)
+    
+    if (!SPIFFS.exists(path))
     {
-        Serial.println("Failed to open file for reading");
+        Serial.println("Fatal error file doesn't exist, unavailable to send");
         return EXIT_FAILURE;
     }
-    file.close();
     return EXIT_SUCCESS;
 }
