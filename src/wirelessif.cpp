@@ -156,7 +156,7 @@ void onMqttPublish(uint16_t packetId)
 int publish(const char* topic, const char* payload, size_t length)
 {
   mqttClient.publish(topic, 2, true, payload);
-  Serial.println("Publishing at QoS 0");
+  Serial.println("Publishing at QoS 2");
   return 0;
 }
 
