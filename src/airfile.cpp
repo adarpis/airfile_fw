@@ -50,7 +50,7 @@ void blink_task(void *pvParameter)
 }
 
 #define uS_TO_S_FACTOR 1000000 /* Conversion factor for micro seconds to seconds */
-#define TIME_TO_SLEEP 5        /* Time ESP32 will go to sleep (in seconds) */
+#define TIME_TO_SLEEP 30       /* Time ESP32 will go to sleep (in seconds) */
 
 void print_wakeup_reason()
 {
@@ -80,25 +80,14 @@ void print_wakeup_reason()
     }
 }
 
+static void powerDown()
+{
+    esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
+    esp_deep_sleep_start();
+}
+
 #if !CONFIG_AUTOSTART_ARDUINO
-void arduinoTask(void *pvParameter)
-{
-    pinMode(LED_BUILTIN, OUTPUT);
-    while (1)
-    {
-        digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-        delay(1000);
-    }
-}
-
-extern "C" void app_main()
-{
-    // initialize arduino library before we start the tasks
-    initArduino();
-
-    xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
-    xTaskCreate(&arduinoTask, "arduino_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
-}
+#error "Configure CONFIG_AUTOSTART_ARDUINO=1 is required to compile, check configuration in sdkconfig.defaults"
 #else
 void setup()
 {
@@ -111,9 +100,7 @@ void setup()
     pinMode(LED_BUILTIN, OUTPUT);
 
     print_wakeup_reason(); // Print the wakeup reason for ESP32
-
-    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR); // ESP32 wakes up every 5 seconds
-
+    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR); // ESP32 wakes up every 10 minutes
     esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_OFF); // all RTC Peripherals are powered off
 
     init_iot_client(); // Initialize Wifi and MQTT client, static IP and connect to broker
@@ -135,7 +122,8 @@ void loop()
     Serial.println("Going to deep-sleep now");
     Serial.flush();
     // Serial.end();
-    delay(5000);
+    disconnect();
+    delay(30000);
     esp_deep_sleep_start();
 }
 #endif

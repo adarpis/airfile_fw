@@ -16,5 +16,6 @@
 
 void init_iot_client(void);
 int publish(const char* topic, const char* payload = nullptr, size_t length = 0);
+int disconnect();
 
 #endif // _WIRELESSIF_HPP

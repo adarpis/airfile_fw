@@ -27,6 +27,7 @@ const char *password = "*************";
 AsyncMqttClient mqttClient;
 TimerHandle_t mqttReconnectTimer;
 TimerHandle_t wifiReconnectTimer;
+bool disconnected;
 
 void connectToWifi();
 void connectToMqtt();
@@ -104,7 +105,7 @@ void onMqttDisconnect(AsyncMqttClientDisconnectReason reason)
 {
   Serial.printf("Disconnected from MQTT. Reason: %d\r\n", reason);
 
-  if (WiFi.isConnected())
+  if (WiFi.isConnected() && !disconnected)
   {
     xTimerStart(mqttReconnectTimer, 0);
   }
@@ -156,5 +157,13 @@ int publish(const char* topic, const char* payload, size_t length)
 {
   mqttClient.publish(topic, 2, true, payload);
   Serial.println("Publishing at QoS 0");
+  return 0;
+}
+
+int disconnect()
+{
+  mqttClient.disconnect();
+  xTimerStop(mqttReconnectTimer, 0); // ensure we don't reconnect to MQTT
+  disconnected = true;
   return 0;
 }
