@@ -1,7 +1,7 @@
 /**
- * @file filesender.cpp
+ * @file fileslicer.cpp
  * @author Adrian Saldana
- * @brief File Sender implementations. Supported ESP32 MCU-based SoC.
+ * @brief File Slicer implementations. Supported ESP32 MCU-based SoC.
  * @version 0.1
  * @date 2022-09-18
  *
@@ -9,19 +9,19 @@
  *
  */
 
-#include "filesender.h"
+#include "fileslicer.h"
 #include <stdlib.h>
-static const char *TAG = "filesender";
+static const char *TAG = "fileslicer";
 
-FileSender::FileSender(fs::FS &fs, const char *path) : _fs(fs), _path(path) {}
+FileSlicer::FileSlicer(fs::FS &fs, const char *path) : _fs(fs), _path(path) {}
 
-FileSender::~FileSender()
+FileSlicer::~FileSlicer()
 {
     if (!_file)
         _file.close();
 }
 
-bool FileSender::begin()
+bool FileSlicer::begin()
 {
     if (!_fs.exists(_path))
     {
@@ -36,7 +36,7 @@ bool FileSender::begin()
     return EXIT_SUCCESS;
 }
 
-size_t FileSender::getBuff(uint8_t *buff, size_t size)
+size_t FileSlicer::getBuff(uint8_t *buff, size_t size)
 {
     if (_file.available())
     {

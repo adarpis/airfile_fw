@@ -19,7 +19,7 @@
 
 // Replace with your network credentials
 const char *ssid = "Net Virtua 397 2.4G";
-const char *password = "*************";
+const char *password = "3654495130";
 
 static const char *TAG = "wirelessif";
 
@@ -158,7 +158,7 @@ void onMqttPublish(uint16_t packetId)
 
 int publish(const char* topic, const char* payload, size_t length)
 {
-  mqttClient.publish(topic, 2, true, payload);
+  mqttClient.publish(topic, 2, true, payload, length);
   ESP_LOGI(TAG, "Publishing at QoS 2");
   return 0;
 }

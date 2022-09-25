@@ -1,5 +1,5 @@
 /**
- * @file filesender.h
+ * @file fileslicer.h
  * @author Adrian Saldana
  * @brief 
  * @version 0.1
@@ -9,10 +9,10 @@
  * 
  */
 
-#ifndef _FILE_SENDER_H
-#define _FILE_SENDER_H
-#include "filesender.hpp"
+#ifndef _FILE_SLICER_H
+#define _FILE_SLICER_H
+#include "fileslicer.hpp"
 
 #define BUFFER_SZ(_buffer_) _buffer_, sizeof(_buffer_)
 
-#endif //_FILE_SENDER_H
+#endif //_FILE_SLICER_H

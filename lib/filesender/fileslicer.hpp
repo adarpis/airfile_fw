@@ -1,5 +1,5 @@
 /**
- * @file filesender.hpp
+ * @file fileslicer.hpp
  * @author Adrian Saldana
  * @brief
  * @version 0.1
@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef _FILE_SENDER_HPP
-#define _FILE_SENDER_HPP
+#ifndef _FILE_SLICER_HPP
+#define _FILE_SLICER_HPP
 
 #include <FS.h>
 
@@ -18,11 +18,11 @@
  * @brief
  *
  */
-class FileSender
+class FileSlicer
 {
 public:
-    FileSender(fs::FS &fs, const char *path);
-    ~FileSender();
+    FileSlicer(fs::FS &fs, const char *path);
+    ~FileSlicer();
 
     bool begin();
     size_t getBuff(uint8_t *buff, size_t size);
@@ -34,4 +34,4 @@ protected:
     const char *_path;
 };
 
-#endif //_FILE_SENDER_HPP
+#endif //_FILE_SLICER_HPP

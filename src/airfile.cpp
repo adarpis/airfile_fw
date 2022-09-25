@@ -18,7 +18,7 @@
 #include <USB.h>
 #include <SPIFFS.h>
 #include "wirelessif.h"
-#include "filesender.h"
+#include "fileslicer.h"
 
 /* Can run 'make menuconfig' to choose the GPIO to blink,
    or you can edit the following line and set a number here.
@@ -29,8 +29,8 @@
 #define LED_BUILTIN 8
 #endif
 
-#ifndef CONFIG_FILESENDER_SIZE_READ_BUFFER
-#define CONFIG_FILESENDER_SIZE_READ_BUFFER 1024u
+#ifndef CONFIG_FILESLICER_SIZE_READ_BUFFER
+#define CONFIG_FILESLICER_SIZE_READ_BUFFER 1024u
 #endif
 
 static const char *TAG = "airfile";
@@ -115,29 +115,32 @@ void setup()
     if (!SPIFFS.begin(true))
     {
         ESP_LOGE(TAG, "An Error has occurred while mounting SPIFFS");
-        
-    }    
-    // if (initFileSender("/500KB.out"))
-    // {
-    //     powerDown();
-    // }
+    }
 
     init_iot_client(); // Initialize Wifi and MQTT client, static IP and connect to broker
 
     delay(5000);
 }
 
+const char *FILE_PATH = "/500KB.out";
+
 void loop()
 {
-    static uint8_t i = 0;
-    while (i < 48)
+    uint8_t buffer[CONFIG_FILESLICER_SIZE_READ_BUFFER];
+    FileSlicer fileSlicer(SPIFFS, FILE_PATH);
+
+    if (!fileSlicer.begin())
     {
-        publish("file", "file descriptor");
-        digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-        delay(250);
-        i++;
+        while (fileSlicer.getBuff(BUFFER_SZ(buffer)))
+        {
+            publish("file", (char *)buffer, sizeof(buffer));
+            digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+            delay(250);
+        }
     }
-    i = 0;
+    else
+        ;
+
     ESP_LOGE(TAG, "Going to deep-sleep now");
     disconnect();
     delay(30000);
