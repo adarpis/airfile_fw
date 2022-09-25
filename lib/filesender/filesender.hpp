@@ -13,7 +13,7 @@
 #define _FILE_SENDER_HPP
 
 #ifndef CONFIG_FILESENDER_SIZE_READ_BUFFER
-#define CONFIG_FILESENDER_SIZE_READ_BUFFER 1024
+#define CONFIG_FILESENDER_SIZE_READ_BUFFER 1024u
 #endif
 
 #include <FS.h>
@@ -25,17 +25,18 @@
 class FileSender
 {
 public:
-    FileSender(fs::FS& fs, const char* path);
+    FileSender(fs::FS &fs, const char *path);
     ~FileSender();
 
     bool begin();
-    char *getBuff();
+    uint8_t *getBuff();
 
 private:
-    char _buff[CONFIG_FILESENDER_SIZE_READ_BUFFER];
+    uint8_t _buff[CONFIG_FILESENDER_SIZE_READ_BUFFER];
 
 protected:
     FS _fs;
+    File _file;
     const char *_path;
 };
 

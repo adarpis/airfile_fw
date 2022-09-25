@@ -17,6 +17,12 @@ static const char *TAG = "filesender";
 
 FileSender::FileSender(fs::FS &fs, const char *path) : _fs(fs), _path(path) {}
 
+FileSender::~FileSender()
+{
+    if (!_file)
+        _file.close();
+}
+
 bool FileSender::begin()
 {
     if (!_fs.exists(_path))
@@ -24,13 +30,20 @@ bool FileSender::begin()
         ESP_LOGE(TAG, "File %s is unavailable in filesystem", _path);
         return EXIT_FAILURE;
     }
+
+    _file = _fs.open(_path);
+    if (!_file)
+        return EXIT_FAILURE;
+
     return EXIT_SUCCESS;
 }
 
-char *FileSender::getBuff()
+uint8_t *FileSender::getBuff()
 {
-    File file = _fs.open(_path);
-    if (!file)
-        return nullptr;
-    return _buff;
+    if (_file.available())
+    {
+        if (_file.read(_buff, (size_t)CONFIG_FILESENDER_SIZE_READ_BUFFER))
+            return _buff;
+    }
+    return nullptr;
 }
