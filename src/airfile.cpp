@@ -29,6 +29,10 @@
 #define LED_BUILTIN 8
 #endif
 
+#ifndef CONFIG_FILESENDER_SIZE_READ_BUFFER
+#define CONFIG_FILESENDER_SIZE_READ_BUFFER 1024u
+#endif
+
 static const char *TAG = "airfile";
 
 void blink_task(void *pvParameter)

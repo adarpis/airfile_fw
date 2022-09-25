@@ -12,4 +12,7 @@
 #ifndef _FILE_SENDER_H
 #define _FILE_SENDER_H
 #include "filesender.hpp"
+
+#define BUFFER_SZ(_buffer_) _buffer_, sizeof(_buffer_)
+
 #endif //_FILE_SENDER_H

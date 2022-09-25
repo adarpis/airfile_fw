@@ -10,9 +10,7 @@
  */
 
 #include "filesender.h"
-#include "sdkconfig.h"
 #include <stdlib.h>
-
 static const char *TAG = "filesender";
 
 FileSender::FileSender(fs::FS &fs, const char *path) : _fs(fs), _path(path) {}
@@ -38,12 +36,16 @@ bool FileSender::begin()
     return EXIT_SUCCESS;
 }
 
-uint8_t *FileSender::getBuff()
+size_t FileSender::getBuff(uint8_t *buff, size_t size)
 {
     if (_file.available())
     {
-        if (_file.read(_buff, (size_t)CONFIG_FILESENDER_SIZE_READ_BUFFER))
-            return _buff;
+        if (_file.read(buff, size))
+        {
+            size_t fPosition = _file.position();
+            ESP_LOGI(TAG, "File position is %d", fPosition);
+            return fPosition;
+        }
     }
-    return nullptr;
+    return 0;
 }

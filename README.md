@@ -22,3 +22,4 @@ build_flags =
 - Check wake up sanity (reset by watchdog timer can draining battery energy fast)
 - If doesn't exist file send a alert with hardware problem and device doesn't power off
 - Easy connect wifi
+- Calculate and hash MD5 of file to verify file in server

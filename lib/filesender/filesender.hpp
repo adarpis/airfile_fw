@@ -12,10 +12,6 @@
 #ifndef _FILE_SENDER_HPP
 #define _FILE_SENDER_HPP
 
-#ifndef CONFIG_FILESENDER_SIZE_READ_BUFFER
-#define CONFIG_FILESENDER_SIZE_READ_BUFFER 1024u
-#endif
-
 #include <FS.h>
 
 /**
@@ -29,11 +25,9 @@ public:
     ~FileSender();
 
     bool begin();
-    uint8_t *getBuff();
+    size_t getBuff(uint8_t *buff, size_t size);
 
 private:
-    uint8_t _buff[CONFIG_FILESENDER_SIZE_READ_BUFFER];
-
 protected:
     FS _fs;
     File _file;
