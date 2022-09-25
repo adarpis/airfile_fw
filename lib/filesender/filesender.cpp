@@ -30,5 +30,7 @@ bool FileSender::begin()
 char *FileSender::getBuff()
 {
     File file = _fs.open(_path);
-    if (!file) return nullptr;
+    if (!file)
+        return nullptr;
+    return _buff;
 }
