@@ -141,9 +141,9 @@ void loop()
     else
         ;
 
+    delay(30000);
     ESP_LOGE(TAG, "Going to deep-sleep now");
     disconnect();
-    delay(30000);
     esp_deep_sleep_start();
 }
 #endif

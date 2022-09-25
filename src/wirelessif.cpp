@@ -1,12 +1,12 @@
 /**
  * @file wirelessif.cpp
  * @author Adrian Saldana
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2022-09-18
- * 
+ *
  * @copyright Copyright (c) 2022
- * 
+ *
  */
 
 #include "wirelessif.h"
@@ -64,8 +64,7 @@ void connectToWifi()
 {
   ESP_LOGI(TAG, "Connecting to Wi-Fi...");
   WiFi.begin(ssid, password);
-  ESP_LOGI(TAG,"\r\nLocal IP: ");
-  // ESP_LOGI(TAG, WiFi.localIP());
+  ESP_LOGI(TAG, "Local IP: %s", WiFi.localIP());
 }
 
 void connectToMqtt()
@@ -76,13 +75,11 @@ void connectToMqtt()
 
 void WiFiEvent(WiFiEvent_t event)
 {
-  ESP_LOGI(TAG,"[WiFi-event] event: %d\n", event);
+  ESP_LOGI(TAG, "[WiFi-event] event: %d", event);
   switch (event)
   {
   case SYSTEM_EVENT_STA_GOT_IP:
-    ESP_LOGI(TAG, "WiFi connected");
-    ESP_LOGI(TAG, "IP address: ");
-    // ESP_LOGI(TAG, WiFi.localIP());
+    ESP_LOGI(TAG, "WiFi connected, IP address: %s", WiFi.localIP());
     connectToMqtt();
     break;
   case SYSTEM_EVENT_STA_DISCONNECTED:
@@ -99,14 +96,12 @@ void WiFiEvent(WiFiEvent_t event)
 
 void onMqttConnect(bool sessionPresent)
 {
-  ESP_LOGI(TAG, "Connected to MQTT.");
-  // ESP_LOGI(TAG,"Session present: ");
-  // ESP_LOGI(TAG, sessionPresent);
+  ESP_LOGI(TAG, "Connected to MQTT. Session present: %d", sessionPresent);
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason)
 {
-  ESP_LOGI(TAG,"Disconnected from MQTT. Reason: %d\r\n", reason);
+  ESP_LOGI(TAG, "Disconnected from MQTT. Reason: %d", reason);
 
   if (WiFi.isConnected() && !disconnected)
   {
@@ -116,47 +111,27 @@ void onMqttDisconnect(AsyncMqttClientDisconnectReason reason)
 
 void onMqttSubscribe(uint16_t packetId, uint8_t qos)
 {
-  ESP_LOGI(TAG, "Subscribe acknowledged.");
-  // ESP_LOGI(TAG,"  packetId: ");
-  // ESP_LOGI(TAG, packetId);
-  // ESP_LOGI(TAG,"  qos: ");
-  // ESP_LOGI(TAG, qos);
+  ESP_LOGI(TAG, "Subscribe acknowledged.   packetId: %d   qos: %d", packetId, qos);
 }
 
 void onMqttUnsubscribe(uint16_t packetId)
 {
-  ESP_LOGI(TAG, "Unsubscribe acknowledged.");
-  // ESP_LOGI(TAG,"  packetId: ");
-  // ESP_LOGI(TAG, packetId);
+  ESP_LOGI(TAG, "Unsubscribe acknowledged.   packetId: %d", packetId);
 }
 
 void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total)
 {
-  // ESP_LOGI(TAG, "Publish received.");
-  // ESP_LOGI(TAG,"  topic: ");
-  // ESP_LOGI(TAG, topic);
-  // ESP_LOGI(TAG,"  qos: ");
-  // ESP_LOGI(TAG, properties.qos);
-  // ESP_LOGI(TAG,"  dup: ");
-  // ESP_LOGI(TAG, properties.dup);
-  // ESP_LOGI(TAG,"  retain: ");
-  // ESP_LOGI(TAG, properties.retain);
-  // ESP_LOGI(TAG,"  len: ");
-  // ESP_LOGI(TAG, len);
-  // ESP_LOGI(TAG,"  index: ");
-  // ESP_LOGI(TAG, index);
-  // ESP_LOGI(TAG,"  total: ");
-  // ESP_LOGI(TAG, total);
+  ESP_LOGI(TAG, "Publish received.   topic: %s   qos: %d"
+                "dup: %d   retain: %d  len: %d  index: %d   total: %d",
+           topic, properties.qos, properties.dup, properties.retain, len, index, total);
 }
 
 void onMqttPublish(uint16_t packetId)
 {
-  ESP_LOGI(TAG, "Publish acknowledged.");
-  ESP_LOGI(TAG,"  packetId: ");
-  // ESP_LOGI(TAG, packetId);
+  ESP_LOGI(TAG, "Publish acknowledged.   packetId: %d", packetId);
 }
 
-int publish(const char* topic, const char* payload, size_t length)
+int publish(const char *topic, const char *payload, size_t length)
 {
   mqttClient.publish(topic, 2, true, payload, length);
   ESP_LOGI(TAG, "Publishing at QoS 2");
