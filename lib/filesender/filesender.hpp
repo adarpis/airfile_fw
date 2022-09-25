@@ -11,5 +11,32 @@
 
 #ifndef _FILE_SENDER_HPP
 #define _FILE_SENDER_HPP
-bool initFileSender(const char * path);
+
+#ifndef CONFIG_FILESENDER_SIZE_READ_BUFFER
+#define CONFIG_FILESENDER_SIZE_READ_BUFFER 1024
+#endif
+
+#include <FS.h>
+
+/**
+ * @brief
+ *
+ */
+class FileSender
+{
+public:
+    FileSender(fs::FS& fs, const char* path);
+    ~FileSender();
+
+    bool begin();
+    char *getBuff();
+
+private:
+    char _buff[CONFIG_FILESENDER_SIZE_READ_BUFFER];
+
+protected:
+    FS _fs;
+    const char *_path;
+};
+
 #endif //_FILE_SENDER_HPP

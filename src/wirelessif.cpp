@@ -11,6 +11,7 @@
 
 #include "wirelessif.h"
 #include <Arduino.h>
+#include "sdkconfig.h"
 // Load Wi-Fi library
 #include <WiFi.h>
 // Load MQTT library
@@ -19,6 +20,8 @@
 // Replace with your network credentials
 const char *ssid = "Net Virtua 397 2.4G";
 const char *password = "*************";
+
+static const char *TAG = "wirelessif";
 
 // Define MQTT Broker and port
 #define MQTT_HOST IPAddress(192, 168, 0, 2)
@@ -59,31 +62,31 @@ void init_iot_client()
 
 void connectToWifi()
 {
-  Serial.println("Connecting to Wi-Fi...");
+  ESP_LOGI(TAG, "Connecting to Wi-Fi...");
   WiFi.begin(ssid, password);
-  Serial.print("\r\nLocal IP: ");
-  Serial.println(WiFi.localIP());
+  ESP_LOGI(TAG,"\r\nLocal IP: ");
+  // ESP_LOGI(TAG, WiFi.localIP());
 }
 
 void connectToMqtt()
 {
-  Serial.println("Connecting to MQTT...");
+  ESP_LOGI(TAG, "Connecting to MQTT...");
   mqttClient.connect();
 }
 
 void WiFiEvent(WiFiEvent_t event)
 {
-  Serial.printf("[WiFi-event] event: %d\n", event);
+  ESP_LOGI(TAG,"[WiFi-event] event: %d\n", event);
   switch (event)
   {
   case SYSTEM_EVENT_STA_GOT_IP:
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
+    ESP_LOGI(TAG, "WiFi connected");
+    ESP_LOGI(TAG, "IP address: ");
+    // ESP_LOGI(TAG, WiFi.localIP());
     connectToMqtt();
     break;
   case SYSTEM_EVENT_STA_DISCONNECTED:
-    Serial.println("WiFi lost connection");
+    ESP_LOGI(TAG, "WiFi lost connection");
     xTimerStop(mqttReconnectTimer, 0); // ensure we don't reconnect to MQTT while reconnecting to Wi-Fi
     xTimerStart(wifiReconnectTimer, 0);
     break;
@@ -96,14 +99,14 @@ void WiFiEvent(WiFiEvent_t event)
 
 void onMqttConnect(bool sessionPresent)
 {
-  Serial.println("Connected to MQTT.");
-  Serial.print("Session present: ");
-  Serial.println(sessionPresent);
+  ESP_LOGI(TAG, "Connected to MQTT.");
+  // ESP_LOGI(TAG,"Session present: ");
+  // ESP_LOGI(TAG, sessionPresent);
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason)
 {
-  Serial.printf("Disconnected from MQTT. Reason: %d\r\n", reason);
+  ESP_LOGI(TAG,"Disconnected from MQTT. Reason: %d\r\n", reason);
 
   if (WiFi.isConnected() && !disconnected)
   {
@@ -113,50 +116,50 @@ void onMqttDisconnect(AsyncMqttClientDisconnectReason reason)
 
 void onMqttSubscribe(uint16_t packetId, uint8_t qos)
 {
-  Serial.println("Subscribe acknowledged.");
-  Serial.print("  packetId: ");
-  Serial.println(packetId);
-  Serial.print("  qos: ");
-  Serial.println(qos);
+  ESP_LOGI(TAG, "Subscribe acknowledged.");
+  // ESP_LOGI(TAG,"  packetId: ");
+  // ESP_LOGI(TAG, packetId);
+  // ESP_LOGI(TAG,"  qos: ");
+  // ESP_LOGI(TAG, qos);
 }
 
 void onMqttUnsubscribe(uint16_t packetId)
 {
-  Serial.println("Unsubscribe acknowledged.");
-  Serial.print("  packetId: ");
-  Serial.println(packetId);
+  ESP_LOGI(TAG, "Unsubscribe acknowledged.");
+  // ESP_LOGI(TAG,"  packetId: ");
+  // ESP_LOGI(TAG, packetId);
 }
 
 void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total)
 {
-  Serial.println("Publish received.");
-  Serial.print("  topic: ");
-  Serial.println(topic);
-  Serial.print("  qos: ");
-  Serial.println(properties.qos);
-  Serial.print("  dup: ");
-  Serial.println(properties.dup);
-  Serial.print("  retain: ");
-  Serial.println(properties.retain);
-  Serial.print("  len: ");
-  Serial.println(len);
-  Serial.print("  index: ");
-  Serial.println(index);
-  Serial.print("  total: ");
-  Serial.println(total);
+  // ESP_LOGI(TAG, "Publish received.");
+  // ESP_LOGI(TAG,"  topic: ");
+  // ESP_LOGI(TAG, topic);
+  // ESP_LOGI(TAG,"  qos: ");
+  // ESP_LOGI(TAG, properties.qos);
+  // ESP_LOGI(TAG,"  dup: ");
+  // ESP_LOGI(TAG, properties.dup);
+  // ESP_LOGI(TAG,"  retain: ");
+  // ESP_LOGI(TAG, properties.retain);
+  // ESP_LOGI(TAG,"  len: ");
+  // ESP_LOGI(TAG, len);
+  // ESP_LOGI(TAG,"  index: ");
+  // ESP_LOGI(TAG, index);
+  // ESP_LOGI(TAG,"  total: ");
+  // ESP_LOGI(TAG, total);
 }
 
 void onMqttPublish(uint16_t packetId)
 {
-  Serial.println("Publish acknowledged.");
-  Serial.print("  packetId: ");
-  Serial.println(packetId);
+  ESP_LOGI(TAG, "Publish acknowledged.");
+  ESP_LOGI(TAG,"  packetId: ");
+  // ESP_LOGI(TAG, packetId);
 }
 
 int publish(const char* topic, const char* payload, size_t length)
 {
   mqttClient.publish(topic, 2, true, payload);
-  Serial.println("Publishing at QoS 2");
+  ESP_LOGI(TAG, "Publishing at QoS 2");
   return 0;
 }
 

@@ -16,6 +16,7 @@
 #include "sdkconfig.h"
 #include <Arduino.h>
 #include <USB.h>
+#include <SPIFFS.h>
 #include "wirelessif.h"
 #include "filesender.h"
 
@@ -27,6 +28,8 @@
 #ifndef LED_BUILTIN
 #define LED_BUILTIN 8
 #endif
+
+static const char *TAG = "airfile";
 
 void blink_task(void *pvParameter)
 {
@@ -93,11 +96,11 @@ static void powerDown()
 #else
 void setup()
 {
-    Serial.begin(115200);
-    while (!Serial)
-    {
-        ; // wait for serial port to connect. Needed for native USB
-    }
+    // Serial.begin(115200);
+    // while (!Serial)
+    // {
+    //     ; // wait for serial port to connect. Needed for native USB
+    // }
     xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
     pinMode(LED_BUILTIN, OUTPUT);
 
@@ -105,10 +108,15 @@ void setup()
     esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);    // ESP32 wakes up every 10 minutes
     esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_OFF); // all RTC Peripherals are powered off
 
-    if (initFileSender("/500KB.out"))
+    if (!SPIFFS.begin(true))
     {
-        powerDown();
-    }
+        ESP_LOGE(TAG, "An Error has occurred while mounting SPIFFS");
+        
+    }    
+    // if (initFileSender("/500KB.out"))
+    // {
+    //     powerDown();
+    // }
 
     init_iot_client(); // Initialize Wifi and MQTT client, static IP and connect to broker
 
@@ -126,9 +134,7 @@ void loop()
         i++;
     }
     i = 0;
-    Serial.println("Going to deep-sleep now");
-    Serial.flush();
-    // Serial.end();
+    ESP_LOGE(TAG, "Going to deep-sleep now");
     disconnect();
     delay(30000);
     esp_deep_sleep_start();
