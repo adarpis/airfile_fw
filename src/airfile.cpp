@@ -58,7 +58,7 @@ void blink_task(void *pvParameter)
 }
 
 #define uS_TO_S_FACTOR 1000000 /* Conversion factor for micro seconds to seconds */
-#define TIME_TO_SLEEP 30       /* Time ESP32 will go to sleep (in seconds) */
+#define TIME_TO_SLEEP 600       /* Time ESP32 will go to sleep (in seconds) */
 
 void print_wakeup_reason()
 {
@@ -100,11 +100,6 @@ static void powerDown()
 #else
 void setup()
 {
-    // Serial.begin(115200);
-    // while (!Serial)
-    // {
-    //     ; // wait for serial port to connect. Needed for native USB
-    // }
     xTaskCreate(&blink_task, "blink_task", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
     pinMode(LED_BUILTIN, OUTPUT);
 
