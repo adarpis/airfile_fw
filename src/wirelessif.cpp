@@ -17,14 +17,11 @@
 // Load MQTT library
 #include <AsyncMqttClient.h>
 
-// Replace with your network credentials
-const char *ssid = "Net Virtua 397 2.4G";
-const char *password = "3654495130";
-
 static const char *TAG = "wirelessif";
 
 // Define MQTT Broker and port
-#define MQTT_HOST IPAddress(192, 168, 0, 2)
+// Just to test development time 
+#define MQTT_HOST IPAddress(192, 168, 0, 2) 
 #define MQTT_PORT 1883
 
 AsyncMqttClient mqttClient;
@@ -63,7 +60,7 @@ void init_iot_client()
 void connectToWifi()
 {
   ESP_LOGI(TAG, "Connecting to Wi-Fi...");
-  WiFi.begin(ssid, password);
+  //WiFi.begin(ssid, password);
   ESP_LOGI(TAG, "Local IP: %s", WiFi.localIP());
 }
 
