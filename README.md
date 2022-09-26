@@ -14,6 +14,10 @@ build_flags =
     ...
 ```
 
+## RUN TESTS
+
+To tun tests first build and upload filesystem image
+
 ## TODO
 
 - Security communication (TLS)
