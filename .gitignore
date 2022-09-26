@@ -41,3 +41,6 @@ sdkconfig.*
 
 # PlatformIO
 compile_commands.json
+
+# Libraries
+lib/qrcode/*
